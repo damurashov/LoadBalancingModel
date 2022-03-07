@@ -10,27 +10,36 @@ from generic import Logging
 
 def ahp_solve(msg: entity.Message, decision_making_node: entity.Node, *candidate_nodes):
 
-    graph = Graph("root")
-    graph.set_weights("root", to_pairwise({
-        "per": msg.per,
-        "eff": msg.eff,
-        "dtr": msg.dtr,
-        "crit": msg.crit,
-    }))
+	graph = Graph("root")
+	graph.set_weights("root", to_pairwise({
+		"per": msg.per,
+		"eff": msg.eff,
+		"dtr": msg.dtr,
+		"crit": msg.crit,
+	}))
 
-    all_nodes = (decision_making_node,) + candidate_nodes
+	all_nodes = (decision_making_node,) + candidate_nodes
 
-    graph.set_weights("per", to_pairwise({str(node.identifier): node.per for node in all_nodes}))  # Performance weights
-    graph.set_weights("eff", to_pairwise({str(node.identifier): 1 / node.eff for node in all_nodes}))  # Efficiency weights
+	graph.set_weights("per", to_pairwise({str(node.identifier): node.per for node in all_nodes}))  # Performance weights
+	graph.set_weights("eff", to_pairwise({str(node.identifier): 1 / node.eff for node in all_nodes}))  # Efficiency weights
 
-    # Compose str weights
-    all_tasks = 0
-    for node in all_nodes:
-        for task in node.tasks:
-            all_tasks += task.per
-    graph.set_weights("dtr", to_pairwise({str(node.identifier): all_tasks / sum([task.per for task in node.tasks]) if len(node.tasks) else 1 for node in all_nodes}))
+	# Compose str weights
+	all_tasks = 0
+	for node in all_nodes:
+		for task in node.tasks:
+			all_tasks += task.per
+	graph.set_weights("dtr", to_pairwise({str(node.identifier): all_tasks / sum([task.per for task in node.tasks]) if len(node.tasks) else 1 for node in all_nodes}))
 
-    graph.set_weights("crit", to_pairwise({str(node.identifier): msg.ttl + 1 if node.identifier == decision_making_node.identifier else msg.ttl for node in all_nodes}))
+	graph.set_weights("crit", to_pairwise({str(node.identifier): msg.ttl + 1 if node.identifier == decision_making_node.identifier else msg.ttl for node in all_nodes}))
 
-    Logging.debug(__file__, ahp_solve, "Get weights: ", graph.get_weights())
+	# Match the result with the node it points to
+	weights = graph.get_weights()
+	weights = {int(i[0]) : i[1] for i in weights.items()}
+	Logging.debug(__file__, ahp_solve, "Get weights: ", weights)
+	max_node_identifier = max(weights, key=weights.get)
+	Logging.debug(__file__, ahp_solve, "Selected node: ", max_node_identifier)
+	result_node = list(filter(lambda n: n.identifier == max_node_identifier, all_nodes))[0]
+
+	return result_node, weights
+
 

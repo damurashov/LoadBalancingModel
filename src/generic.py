@@ -25,6 +25,10 @@ class Logging:
 		return Logging._logger
 
 	@staticmethod
+	def debug(*args, **kwargs):
+		return Logging.get_logger().debug(Logging.format(*args, **kwargs))
+
+	@staticmethod
 	def info(*args, **kwargs):
 		return Logging.get_logger().info(Logging.format(*args, **kwargs))
 

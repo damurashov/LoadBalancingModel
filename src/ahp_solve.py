@@ -5,6 +5,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "src")) 
 
 from ahpy.ahpy.ahpy import Graph, to_pairwise
 from src import entity
+from generic import Logging
 
 
 def ahp_solve(msg: entity.Message, decision_making_node: entity.Node, *candidate_nodes):
@@ -31,5 +32,5 @@ def ahp_solve(msg: entity.Message, decision_making_node: entity.Node, *candidate
 
     graph.set_weights("crit", to_pairwise({str(node.identifier): msg.ttl + 1 if node.identifier == decision_making_node.identifier else msg.ttl for node in all_nodes}))
 
-    print(graph.get_weights())
+    Logging.debug(__file__, ahp_solve, "Get weights: ", graph.get_weights())
 

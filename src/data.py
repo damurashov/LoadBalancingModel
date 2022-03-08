@@ -16,8 +16,8 @@ class RandomGeneration:
 	cpu_n_cores_max: int = 16  # Max number of CPU cores
 	cpu_eff_min: int = 40  # CPU's min thermal radiation, in W, opposite to thermal efficiency
 	cpu_eff_max: int = 200  # CPU's max thermal radiation, in W, opposite to thermal efficiency
-	msg_ttl_min: int = 5 # Min ttl of a message
-	msg_ttl_max: int = 10 # Max ttl of a message
+	msg_ttl_min: int = 5  # Min ttl of a message
+	msg_ttl_max: int = 10  # Max ttl of a message
 	msg_score_max: int = 10  # Max score that can be assigned to "per", "eff", "crit", or "dtr". Min = 1
 
 

@@ -8,6 +8,10 @@ from src import entity
 
 class TestEntity(unittest.TestCase):
 
-	def test_probe(self):
-		n = entity.Node(per=12, eff=5)
-		print(n.__dir__())
+	def test_hashable(self):
+		n1 = entity.Node(per=12, eff=5)
+		n2 = entity.Node(per=12, eff=5)
+
+		d = {n1: "a", n2: "b"}
+
+		self.assertTrue(d[n1] == "a")

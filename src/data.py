@@ -70,6 +70,42 @@ def generate_node(r: RandomGeneration, n: entity.Node = None):
 	return res
 
 
+def node_tasks_count(n: entity.Node):
+	return len(n.tasks)
+
+
+def node_tasks_sum_per(n: entity.Node):
+	"""
+	:return: Overall load calculated for tasks' requirements to a node's performance
+	"""
+	return sum([t.per for t in n.tasks])
+
+
+def nodes_sum_per(nodes):
+	return sum([n.per for n in nodes])
+
+
+def nodes_max_per(nodes):
+	return max([n.per for n in nodes])
+
+
+def nodes_max_eff(nodes):
+	"""
+	:return: Max power consumption among nodes
+	"""
+	return max([n.eff for n in nodes])
+
+
+def node_compare_per(n: entity.Node, nodes):
+	"""
+	:param n: Node object
+	:param nodes: Other nodes from the cluster to compare against
+	"""
+	performace_overall = nodes_sum_per(nodes)
+
+	return n.per / performace_overall
+
+
 def make_cluster(nodes, topology):
 	"""
 	:param nodes: Ordered list of nodes

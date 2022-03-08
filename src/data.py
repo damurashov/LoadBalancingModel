@@ -18,6 +18,7 @@ class RandomGeneration:
 	cpu_eff_max: int = 200  # CPU's max thermal radiation, in W, opposite to thermal efficiency
 	msg_ttl_min: int = 5  # Min ttl of a message
 	msg_ttl_max: int = 10  # Max ttl of a message
+	msg_score_min: int = 1  # Min score that can be assigned to "per", "eff", "crit", or "dtr". Min = 1
 	msg_score_max: int = 10  # Max score that can be assigned to "per", "eff", "crit", or "dtr". Min = 1
 
 
@@ -38,16 +39,16 @@ def generate_message(r: RandomGeneration, m: entity.Message = None):
 		res.ttl = randint(r.msg_ttl_min, r.msg_ttl_max)
 
 	if res.per is None:
-		res.per = randint(1, r.msg_score_max)
+		res.per = randint(r.msg_score_min, r.msg_score_max)
 
 	if res.eff is None:
-		res.eff = randint(1, r.msg_score_max)
+		res.eff = randint(r.msg_score_min, r.msg_score_max)
 
 	if res.dtr is None:
-		res.dtr = randint(1, r.msg_score_max)
+		res.dtr = randint(r.msg_score_min, r.msg_score_max)
 
 	if res.crit is None:
-		res.crit = randint(1, r.msg_score_max)
+		res.crit = randint(r.msg_score_min, r.msg_score_max)
 
 	return res
 
@@ -76,6 +77,9 @@ def make_cluster(nodes, topology):
 
 	Example: cl = make_cluster([generate_node(RandomGeneration()), generate_node(RandomGeneration()], [0, 1])
 	"""
+	assert not topology % 2  # Must be pairs of numbers
+	assert all([type(topology[i]) is int for i in range(len(topology))])
+
 	def np(a, b):  # Get pair
 		return nodes[a], nodes[b]
 

@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import networkx
 import pathlib
 import sys
+import plotly.express as px
+import pandas
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))  # We need files from "src/", that's how we access them
 
@@ -99,6 +101,21 @@ def plot_cluster(cl):
 	plt.show()
 
 
+def plot_fit_performance():
+	d = dict()
+	d["per"] = list()
+	d["load"] = list()
+
+	nodes_max_performance = data.nodes_max_per(nodes)
+	for n in nodes:
+		d["per"].append(n.per / nodes_max_performance)
+		d["load"].append(data.node_tasks_sum_per(n))
+
+	df = pandas.DataFrame(data=d)
+	fig = px.scatter(df, x="per", y="load", trendline="ols")
+	fig.show()
+
+
 def cluster_populate(cl):
 	entry_node = nodes[0]
 	for _ in range(rounds_number):
@@ -116,13 +133,14 @@ def cluster_populate(cl):
 
 
 if __name__ == "__main__":
-	rg, message_template = profile_energy_efficiency()
-	rounds_number = 500
+	rg, message_template = profile_load_distribution()
+	rounds_number = 100
 	processors_number = len(PROCESSORS)
 	nodes = [data.generate_node(rg, PROCESSORS[cluster_topology[i] % processors_number]) for i in range(cluster_size)]
 	cl = data.make_cluster(nodes, cluster_topology)
 	Logging.debug(cl)
 
 	cluster_populate(cl)
+	plot_fit_performance()
 
 	# plot_cluster(cl)

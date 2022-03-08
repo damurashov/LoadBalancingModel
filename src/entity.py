@@ -17,6 +17,7 @@ class Node:
 	eff: int  # Energy consumption (opposite to efficiency)
 	tasks: list = field(default_factory=list)  # List of tasks
 	identifier: int = field(default_factory=count().__next__)
+	name: str = ""
 
 	def __eq__(self, other):
 		return self.identifier == other.identifier

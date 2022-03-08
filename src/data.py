@@ -77,7 +77,7 @@ def make_cluster(nodes, topology):
 
 	Example: cl = make_cluster([generate_node(RandomGeneration()), generate_node(RandomGeneration()], [0, 1])
 	"""
-	assert not topology % 2  # Must be pairs of numbers
+	assert (len(topology) % 2 == 0)  # Must be pairs of numbers
 	assert all([type(topology[i]) is int for i in range(len(topology))])
 
 	def np(a, b):  # Get pair
@@ -87,5 +87,10 @@ def make_cluster(nodes, topology):
 		a = pairs[0]
 		b = pairs[1]
 		l.append(np(a, b))
+
+		if len(pairs) > 2:
+			return lnp(l, *pairs[2:])
+		else:
+			return l
 
 	return networkx.Graph(lnp([], *topology))

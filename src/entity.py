@@ -11,7 +11,6 @@ class Message:
 	dtr: int  # How important it is to distribute load evenly
 	crit: int  # How important it is to make decision now
 
-
 @dataclass
 class Node:
 	per: int  # Performance

@@ -7,7 +7,7 @@ from src import entity
 from random import randint
 from dataclasses import dataclass, field
 import copy
-
+import networkx
 
 @dataclass
 class RandomGeneration:
@@ -66,3 +66,22 @@ def generate_node(r: RandomGeneration, n: entity.Node = None):
 		res.eff = randint(r.cpu_eff_min, r.cpu_eff_max)
 
 	return res
+
+
+def make_cluster(nodes, topology):
+	"""
+	:param nodes: Ordered list of nodes
+	:param topology: List of numbers which will be parsed into pairs, each pair will represent an edge
+	:return: `networkx.Graph` object
+
+	Example: cl = make_cluster([generate_node(RandomGeneration()), generate_node(RandomGeneration()], [0, 1])
+	"""
+	def np(a, b):  # Get pair
+		return nodes[a], nodes[b]
+
+	def lnp(l, *pairs):  # List of pairs
+		a = pairs[0]
+		b = pairs[1]
+		l.append(np(a, b))
+
+	return networkx.Graph(lnp([], *topology))

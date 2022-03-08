@@ -134,7 +134,7 @@ def cluster_populate(cl):
 
 if __name__ == "__main__":
 	rg, message_template = profile_load_distribution()
-	rounds_number = 100
+	rounds_number = 500
 	processors_number = len(PROCESSORS)
 	nodes = [data.generate_node(rg, PROCESSORS[cluster_topology[i] % processors_number]) for i in range(cluster_size)]
 	cl = data.make_cluster(nodes, cluster_topology)

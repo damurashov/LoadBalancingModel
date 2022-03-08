@@ -8,6 +8,6 @@ from src import entity
 
 class TestEntity(unittest.TestCase):
 
-    def test_probe(self):
-        n = entity.Node(per=12, eff=5)
-        print(n.__dir__())
+	def test_probe(self):
+		n = entity.Node(per=12, eff=5)
+		print(n.__dir__())

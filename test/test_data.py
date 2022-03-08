@@ -19,12 +19,15 @@ class TestData(unittest.TestCase):
 		m2 = data.generate_message(data.RandomGeneration(), m)
 		max_iter_threshold = 100
 
-		while m2.per == m_per_prev and threshold:
+		while m2.per == m_per_prev and max_iter_threshold:
 			m2 = data.generate_message(data.RandomGeneration(), m)
 			max_iter_threshold -= 1
 
 		Logging.debug(TestData.test_generate_message, m2)
 		self.assertTrue(m2.per != m_per_prev)
+		self.assertTrue(m != m2)
 
 	def test_generate_node(self):
 		m = data.generate_node(data.RandomGeneration())
+		m2 = data.generate_node(data.RandomGeneration(), m)
+		self.assertTrue(m != m2)

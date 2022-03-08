@@ -4,6 +4,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "src"))  # We need files from "src/", that's how we access them
 
 from src import entity
+from src.generic import Logging
 from random import randint
 from dataclasses import dataclass, field
 import copy
@@ -33,7 +34,7 @@ def generate_message(r: RandomGeneration, m: entity.Message = None):
 	if m is None:
 		m = entity.Message(None, None, None, None, None)
 
-	res = copy.deepcopy(m)
+	res = entity.Message(ttl=m.ttl, per=m.per, eff=m.eff, dtr=m.dtr, crit=m.crit)
 
 	if res.ttl is None:
 		res.ttl = randint(r.msg_ttl_min, r.msg_ttl_max)
@@ -58,7 +59,7 @@ def generate_node(r: RandomGeneration, n: entity.Node = None):
 	if n is None:
 		n = entity.Node(None, None, [])
 
-	res = copy.deepcopy(n)
+	res = entity.Node(per=n.per, eff=n.eff, tasks=[], name=n.name)
 
 	if res.per is None:
 		res.per = randint(1, r.cpu_n_cores_max) * randint(r.cpu_clock_min, r.cpu_clock_max)
@@ -93,4 +94,10 @@ def make_cluster(nodes, topology):
 		else:
 			return l
 
-	return networkx.Graph(lnp([], *topology))
+	nodes = lnp([], *topology)
+	Logging.debug(nodes)
+
+	for n in nodes:
+		assert not n[0] == n[1]
+
+	return networkx.Graph(nodes)

@@ -91,6 +91,14 @@ def nodes_max_per(nodes):
 
 def nodes_max_eff(nodes):
 	"""
+	:return: Since "eff" metric is the opposite of efficiency, it returns the value corresponding to the least efficient
+	         node
+	"""
+	return max([n.eff for n in nodes])
+
+
+def nodes_max_eff(nodes):
+	"""
 	:return: Max power consumption among nodes
 	"""
 	return max([n.eff for n in nodes])

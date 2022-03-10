@@ -19,6 +19,9 @@ class Node:
 	identifier: int = field(default_factory=count().__next__)
 	name: str = ""
 
+	def __repr__(self):
+		return str(self.identifier)
+
 	def __eq__(self, other):
 		return self.identifier == other.identifier
 

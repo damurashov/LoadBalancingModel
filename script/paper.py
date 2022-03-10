@@ -4,6 +4,7 @@ import pathlib
 import sys
 import plotly.express as px
 import pandas
+import csv
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))  # We need files from "src/", that's how we access them
 
@@ -148,6 +149,19 @@ def cluster_populate(cl):
 			"rel. pwr. consumption:", n.eff / nodes_max_power_consumption)  # Performance related to max
 
 
+def print_network_table_file(filename):
+	with open(filename, 'w') as f:
+		csvw = csv.writer(f)
+		offset = min([n.identifier for n in nodes]) - 1  # Node identifiers do not count from 1
+		csv.writerow('Id', 'Name', 'Performance (CPU clock * N cores)', 'Thermal output, W', 'Tasks assigned', 'Task overall complexity', 'Neighbors')
+
+		for node in cl.nodes:
+			neighbors = ', '.join([str(n.identifier - offset) for n in cl.neighbors(node)])
+			csvw.writerow([node.identifier - offset, node.name, node.per, node.eff, len(node.tasks), data.node_tasks_sum_per(node), neighbors])
+
+		exit(0)
+
+
 if __name__ == "__main__":
 	# rg, message_template = profile_load_distribution()
 	rg, message_template = profile_energy_efficiency()
@@ -160,5 +174,5 @@ if __name__ == "__main__":
 	cluster_populate(cl)
 	plot_fit_performance()
 	plot_fit_efficiency()
-
 	plot_cluster(cl)
+	print_network_table_file('cluster.csv')

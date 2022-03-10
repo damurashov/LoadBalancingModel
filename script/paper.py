@@ -87,18 +87,9 @@ def profile_energy_efficiency():
 	return rg, message_template
 
 
-def plot_test():
-	G = networkx.petersen_graph()
-	subax1 = plt.subplot(121)
-	networkx.draw(G, with_labels=False)
-	subax2 = plt.subplot(122)
-	networkx.draw_shell(G, nlist=[range(5, 10), range(5)], with_labels=True, font_weight='bold')
-	plt.show()
-
-
 def plot_cluster(cl):
 	p = plt.subplot(111)
-	networkx.draw(cl, with_labels=False, pos=networkx.spectral_layout(cl, weight="name"))
+	networkx.draw(cl, with_labels=True, pos=networkx.spectral_layout(cl, weight="name"), font_weight='bold', node_color='white', node_size=700, font_size=17)
 	plt.show()
 
 

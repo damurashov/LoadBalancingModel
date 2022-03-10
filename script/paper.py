@@ -144,8 +144,8 @@ def print_network_table_file(filename):
 	with open(filename, 'w') as f:
 		csvw = csv.writer(f)
 		offset = min([n.identifier for n in nodes]) - 1  # Node identifiers do not count from 1
-		csv.writerow('Id', 'Name', 'Performance (CPU clock * N cores)', 'Thermal output, W', 'Tasks assigned', 'Tasks overall complexity', 'Neighbors')
-		csv.writerow('Количество узлов', 'Имя узла', 'Производительность (CPU clock * N cores)', 'Мощность, Вт', 'Количество назначенных задач', 'Общая сложность задач', 'Список соседей')
+		csvw.writerow(['Id', 'Name', 'Performance (CPU clock * N cores)', 'Thermal output, W', 'Tasks assigned', 'Tasks overall complexity', 'Neighbors'])
+		csvw.writerow(['Количество узлов', 'Имя узла', 'Производительность (CPU clock * N cores)', 'Мощность, Вт', 'Количество назначенных задач', 'Общая сложность задач', 'Список соседей'])
 
 		for node in cl.nodes:
 			neighbors = ', '.join([str(n.identifier - offset) for n in cl.neighbors(node)])

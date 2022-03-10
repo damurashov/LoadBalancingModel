@@ -89,7 +89,7 @@ def profile_energy_efficiency():
 def plot_test():
 	G = networkx.petersen_graph()
 	subax1 = plt.subplot(121)
-	networkx.draw(G, with_labels=True, font_weight='bold')
+	networkx.draw(G, with_labels=False)
 	subax2 = plt.subplot(122)
 	networkx.draw_shell(G, nlist=[range(5, 10), range(5)], with_labels=True, font_weight='bold')
 	plt.show()
@@ -97,7 +97,7 @@ def plot_test():
 
 def plot_cluster(cl):
 	p = plt.subplot(111)
-	networkx.draw(cl, with_labels=True, pos=networkx.spectral_layout(cl, weight="name"))
+	networkx.draw(cl, with_labels=False, pos=networkx.spectral_layout(cl, weight="name"))
 	plt.show()
 
 
@@ -113,6 +113,22 @@ def plot_fit_performance():
 
 	df = pandas.DataFrame(data=d)
 	fig = px.scatter(df, x="per", y="load", trendline="ols")
+	fig.show()
+
+
+def plot_fit_efficiency():
+	d = dict()
+	d["eff"] = list()
+	d["load"] = list()
+
+	nodes_max_inefficiency = data.nodes_max_eff(nodes)
+
+	for n in nodes:
+		d["eff"].append(n.eff / nodes_max_inefficiency)
+		d["load"].append(data.node_tasks_sum_per(n))
+
+	df = pandas.DataFrame(data=d)
+	fig = px.scatter(df, x="eff", y="load", trendline="ols")
 	fig.show()
 
 
@@ -133,7 +149,8 @@ def cluster_populate(cl):
 
 
 if __name__ == "__main__":
-	rg, message_template = profile_load_distribution()
+	# rg, message_template = profile_load_distribution()
+	rg, message_template = profile_energy_efficiency()
 	rounds_number = 500
 	processors_number = len(PROCESSORS)
 	nodes = [data.generate_node(rg, PROCESSORS[cluster_topology[i] % processors_number]) for i in range(cluster_size)]
@@ -142,5 +159,6 @@ if __name__ == "__main__":
 
 	cluster_populate(cl)
 	plot_fit_performance()
+	plot_fit_efficiency()
 
-	# plot_cluster(cl)
+	plot_cluster(cl)

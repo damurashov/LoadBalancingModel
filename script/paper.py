@@ -159,8 +159,6 @@ def print_network_table_file(filename):
 			neighbors = ', '.join([str(n.identifier - offset) for n in cl.neighbors(node)])
 			csvw.writerow([node.identifier - offset, node.name, node.per, node.eff, len(node.tasks), data.node_tasks_sum_per(node), neighbors])
 
-		exit(0)
-
 
 if __name__ == "__main__":
 	# rg, message_template = profile_load_distribution()

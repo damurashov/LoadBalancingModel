@@ -87,18 +87,9 @@ def profile_energy_efficiency():
 	return rg, message_template
 
 
-def plot_test():
-	G = networkx.petersen_graph()
-	subax1 = plt.subplot(121)
-	networkx.draw(G, with_labels=False)
-	subax2 = plt.subplot(122)
-	networkx.draw_shell(G, nlist=[range(5, 10), range(5)], with_labels=True, font_weight='bold')
-	plt.show()
-
-
 def plot_cluster(cl):
 	p = plt.subplot(111)
-	networkx.draw(cl, with_labels=False, pos=networkx.spectral_layout(cl, weight="name"))
+	networkx.draw(cl, with_labels=True, pos=networkx.spectral_layout(cl, weight="name"), font_weight='bold', node_color='white', node_size=700, font_size=17)
 	plt.show()
 
 
@@ -153,8 +144,8 @@ def print_network_table_file(filename):
 	with open(filename, 'w') as f:
 		csvw = csv.writer(f)
 		offset = min([n.identifier for n in nodes]) - 1  # Node identifiers do not count from 1
-		csv.writerow('Id', 'Name', 'Performance (CPU clock * N cores)', 'Thermal output, W', 'Tasks assigned', 'Tasks overall complexity', 'Neighbors')
-		csv.writerow('Количество узлов', 'Имя узла', 'Производительность (CPU clock * N cores)', 'Мощность, Вт', 'Количество назначенных задач', 'Общая сложность задач', 'Список соседей')
+		csvw.writerow(['Id', 'Name', 'Performance (CPU clock * N cores)', 'Thermal output, W', 'Tasks assigned', 'Tasks overall complexity', 'Neighbors'])
+		csvw.writerow(['Количество узлов', 'Имя узла', 'Производительность (CPU clock * N cores)', 'Мощность, Вт', 'Количество назначенных задач', 'Общая сложность задач', 'Список соседей'])
 
 		for node in cl.nodes:
 			neighbors = ', '.join([str(n.identifier - offset) for n in cl.neighbors(node)])

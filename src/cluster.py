@@ -8,7 +8,7 @@ from src import entity
 from src import ahp_solve
 
 
-def assign_message(cluster: nx.Graph, msg: entity.Message, decision_making_node: entity.Node):
+def assign_message(cluster: nx.Graph, msg: entity.Message, decision_making_node: entity.Node, decision_algorithm=ahp_solve.ahp_solve):
 	"""
 	Bounces the message until its TTL goes to 0, or until it will be decided to assign the message to some node
 
@@ -23,7 +23,7 @@ def assign_message(cluster: nx.Graph, msg: entity.Message, decision_making_node:
 		return cluster
 
 	neighbors = tuple(cluster.neighbors(decision_making_node))
-	assigned_node, _ = ahp_solve.ahp_solve(msg, decision_making_node, *neighbors)
+	assigned_node, _ = decision_algorithm(msg, decision_making_node, *neighbors)
 
 	if assigned_node == decision_making_node:
 		decision_making_node.add_task(msg)

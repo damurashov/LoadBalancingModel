@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "src"))  # We need files from "src/", that's how we access them
 
 from ahpy.ahpy.ahpy import Graph, to_pairwise
-from src import entity
+from src import entity, data
 from generic import Logging
 
 
@@ -39,3 +39,10 @@ def ahp_solve(msg: entity.Message, decision_making_node: entity.Node, *candidate
 	result_node = list(filter(lambda n: n.identifier == max_node_identifier, all_nodes))[0]
 
 	return result_node, weights
+
+
+def plain(msg: entity.Message, decision_making_node: entity.Node, *candidate_nodes):
+	all_nodes = [decision_making_node, *candidate_nodes]
+	node = min(all_nodes, key=lambda n: data.node_tasks_sum_per(n))
+
+	return node, None

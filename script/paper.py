@@ -9,7 +9,7 @@ import csv
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))  # We need files from "src/", that's how we access them
 
 from res.processors import PROCESSORS
-from src import data, entity, cluster
+from src import data, entity, cluster, ahp_solve
 from src.generic import Logging
 from copy import deepcopy
 
@@ -87,6 +87,24 @@ def profile_energy_efficiency():
 	return rg, message_template
 
 
+def profile_uniform_load():
+	rg = data.RandomGeneration(
+		msg_score_min=1,
+		msg_score_max=1
+	)
+
+	message_template = entity.Message(
+		ttl=int(cluster_size * 1.5),
+		per=None,
+		# Message's performance requirements (that's how `per` field may be interpreted) will be the only varying metric
+		eff=1,
+		dtr=80,
+		crit=1
+	)
+
+	return rg, message_template
+
+
 def plot_cluster(cl):
 	p = plt.subplot(111)
 	networkx.draw(cl, with_labels=True, pos=networkx.spectral_layout(cl, weight="name"), font_weight='bold', node_color='white', node_size=700, font_size=17)
@@ -128,7 +146,7 @@ def cluster_populate(cl):
 	entry_node = nodes[0]
 	for _ in range(rounds_number):
 		msg = data.generate_message(rg, message_template)
-		cl = cluster.assign_message(cl, msg, entry_node)
+		cl = cluster.assign_message(cl, msg, entry_node, ahp_solve.ahp_solve)
 
 	nodes_max_performance = data.nodes_max_per(nodes)
 	nodes_max_power_consumption = data.nodes_max_eff(nodes)
@@ -153,9 +171,10 @@ def print_network_table_file(filename):
 
 
 if __name__ == "__main__":
-	# rg, message_template = profile_load_distribution()
-	rg, message_template = profile_energy_efficiency()
-	rounds_number = 500
+	rg, message_template = profile_load_distribution()
+	# rg, message_template = profile_energy_efficiency()
+	# rg, message_template = profile_uniform_load()
+	rounds_number = 1000
 	processors_number = len(PROCESSORS)
 	nodes = [data.generate_node(rg, PROCESSORS[cluster_topology[i] % processors_number]) for i in range(cluster_size)]
 	cl = data.make_cluster(nodes, cluster_topology)

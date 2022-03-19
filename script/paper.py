@@ -99,7 +99,7 @@ def profile_uniform_load():
 		# Message's performance requirements (that's how `per` field may be interpreted) will be the only varying metric
 		eff=1,
 		dtr=80,
-		crit=1
+		crit=30
 	)
 
 	return rg, message_template
@@ -142,6 +142,20 @@ def plot_fit_efficiency():
 	fig.show()
 
 
+def plot_fit_distribution():
+	d = dict()
+	d['id'] = list()
+	d['load'] = list()
+
+	for n in nodes:
+		d['id'].append(n.identifier)
+		d['load'].append(data.node_tasks_sum_per(n))
+
+	df = pandas.DataFrame(data=d)
+	fig = px.scatter(df, x='id', y='load')
+	fig.show()
+
+
 def cluster_populate(cl):
 	entry_node = nodes[0]
 	for _ in range(rounds_number):
@@ -171,9 +185,9 @@ def print_network_table_file(filename):
 
 
 if __name__ == "__main__":
-	rg, message_template = profile_load_distribution()
+	# rg, message_template = profile_load_distribution()
 	# rg, message_template = profile_energy_efficiency()
-	# rg, message_template = profile_uniform_load()
+	rg, message_template = profile_uniform_load()
 	rounds_number = 1000
 	processors_number = len(PROCESSORS)
 	nodes = [data.generate_node(rg, PROCESSORS[cluster_topology[i] % processors_number]) for i in range(cluster_size)]
@@ -183,5 +197,6 @@ if __name__ == "__main__":
 	cluster_populate(cl)
 	plot_fit_performance()
 	plot_fit_efficiency()
+	plot_fit_distribution()
 	plot_cluster(cl)
 	print_network_table_file('cluster.csv')
